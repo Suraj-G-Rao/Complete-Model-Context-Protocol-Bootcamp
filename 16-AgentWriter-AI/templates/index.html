@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Live LangGraph technical writing agent"
+    >
+
+    <title>{{ page_title }}</title>
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', path='css/style.css') }}"
+    >
+</head>
+
+<body>
+    <div class="background-glow glow-one"></div>
+    <div class="background-glow glow-two"></div>
+
+    <div class="app-layout">
+        <aside class="sidebar">
+            <a href="/" class="brand">
+                <div class="brand-logo">✦</div>
+
+                <div>
+                    <strong>AgentWriter AI</strong>
+                    <small>LangGraph workspace</small>
+                </div>
+            </a>
+
+            <button
+                id="newRunButton"
+                class="new-run-button"
+                type="button"
+            >
+                <span>＋</span>
+                New article
+            </button>
+
+            <div class="workflow-menu">
+                <p>Workflow</p>
+
+                <div class="workflow-item">
+                    <span>01</span>
+                    Understand request
+                </div>
+
+                <div class="workflow-item">
+                    <span>02</span>
+                    Research sources
+                </div>
+
+                <div class="workflow-item">
+                    <span>03</span>
+                    Create plan
+                </div>
+
+                <div class="workflow-item">
+                    <span>04</span>
+                    Write sections
+                </div>
+
+                <div class="workflow-item">
+                    <span>05</span>
+                    Generate visuals
+                </div>
+            </div>
+
+            <div class="server-status">
+                <div
+                    id="healthDot"
+                    class="health-dot"
+                ></div>
+
+                <div>
+                    <strong id="healthText">
+                        Checking server
+                    </strong>
+
+                    <small>
+                        FastAPI + LangGraph
+                    </small>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div>
+                    <span class="eyebrow">
+                        AI content workspace
+                    </span>
+
+                    <h1>
+                        Build technical articles
+                    </h1>
+                </div>
+
+                <div
+                    id="runBadge"
+                    class="run-badge"
+                >
+                    Ready
+                </div>
+            </header>
+
+            <section class="composer-card">
+                <div class="composer-heading">
+                    <div class="composer-icon">✦</div>
+
+                    <div>
+                        <h2>
+                            What should the agent write?
+                        </h2>
+
+                        <p>
+                            Follow the research, plan,
+                            writing progress and final
+                            output in real time.
+                        </p>
+                    </div>
+                </div>
+
+                <form id="runForm">
+                    <textarea
+                        id="topicInput"
+                        maxlength="1000"
+                        rows="4"
+                        required
+                        placeholder="Example: Build a production-ready RAG system with LangGraph, PostgreSQL and observability"
+                    ></textarea>
+
+                    <div class="composer-footer">
+                        <div class="examples">
+                            <button
+                                type="button"
+                                data-topic="Explain LangGraph subgraphs with a practical multi-agent example"
+                            >
+                                LangGraph subgraphs
+                            </button>
+
+                            <button
+                                type="button"
+                                data-topic="Design a production-ready RAG system with PostgreSQL and LangGraph"
+                            >
+                                Production RAG
+                            </button>
+
+                            <button
+                                type="button"
+                                data-topic="Latest practical developments in open-source AI agents"
+                            >
+                                AI agent roundup
+                            </button>
+                        </div>
+
+                        <div class="form-actions">
+                            <button
+                                id="cancelButton"
+                                class="cancel-button"
+                                type="button"
+                                hidden
+                            >
+                                Stop
+                            </button>
+
+                            <button
+                                id="runButton"
+                                class="run-button"
+                                type="submit"
+                            >
+                                <span>Run agent</span>
+                                <span>➜</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+            <section class="workspace-grid">
+                <article class="panel-card">
+                    <div class="panel-header">
+                        <div>
+                            <span class="panel-label">
+                                Execution
+                            </span>
+
+                            <h2>Agent activity</h2>
+                        </div>
+
+                        <div
+                            id="progressRing"
+                            class="progress-ring"
+                            style="--progress: 0"
+                        >
+                            <span id="progressText">
+                                0%
+                            </span>
+                        </div>
+                    </div>
+
+                    <div
+                        id="timeline"
+                        class="timeline"
+                    >
+                        <div
+                            id="activityEmpty"
+                            class="empty-state"
+                        >
+                            <div class="empty-icon">⌁</div>
+
+                            <h3>No active run</h3>
+
+                            <p>
+                                Agent steps and completed
+                                actions will appear here.
+                            </p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="panel-card">
+                    <div class="panel-header">
+                        <div>
+                            <span class="panel-label">
+                                Strategy
+                            </span>
+
+                            <h2>Article plan</h2>
+                        </div>
+
+                        <span
+                            id="taskCount"
+                            class="task-count"
+                        >
+                            0 tasks
+                        </span>
+                    </div>
+
+                    <div
+                        id="planMeta"
+                        class="plan-meta"
+                        hidden
+                    ></div>
+
+                    <div
+                        id="planList"
+                        class="plan-list"
+                    >
+                        <div
+                            id="planEmpty"
+                            class="empty-state"
+                        >
+                            <div class="empty-icon">☷</div>
+
+                            <h3>Waiting for a plan</h3>
+
+                            <p>
+                                Planned sections will appear
+                                here before the agent writes them.
+                            </p>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section
+                id="resultCard"
+                class="panel-card result-card"
+            >
+                <div class="panel-header">
+                    <div>
+                        <span class="panel-label">
+                            Deliverable
+                        </span>
+
+                        <h2>Generated article</h2>
+                    </div>
+
+                    <div class="result-actions">
+                        <button
+                            id="copyButton"
+                            class="secondary-button"
+                            type="button"
+                            disabled
+                        >
+                            Copy Markdown
+                        </button>
+
+                        <a
+                            id="downloadButton"
+                            class="secondary-button disabled"
+                            href="#"
+                            aria-disabled="true"
+                        >
+                            Download .md
+                        </a>
+                    </div>
+                </div>
+
+                <div class="result-tabs">
+                    <button
+                        id="previewTab"
+                        class="active"
+                        type="button"
+                    >
+                        Preview
+                    </button>
+
+                    <button
+                        id="markdownTab"
+                        type="button"
+                    >
+                        Markdown
+                    </button>
+                </div>
+
+                <div class="result-content">
+                    <div
+                        id="articlePreview"
+                        class="article-preview"
+                    >
+                        <div
+                            id="resultEmpty"
+                            class="empty-state"
+                        >
+                            <div class="empty-icon">✎</div>
+
+                            <h3>
+                                Your article will appear here
+                            </h3>
+
+                            <p>
+                                The final result appears after
+                                every section is completed.
+                            </p>
+                        </div>
+                    </div>
+
+                    <pre
+                        id="markdownOutput"
+                        class="markdown-output"
+                        hidden
+                    ></pre>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div
+        id="toast"
+        class="toast"
+        role="status"
+        aria-live="polite"
+    ></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+
+    <script
+        src="{{ url_for('static', path='js/app.js') }}"
+        defer
+    ></script>
+</body>
+</html>
