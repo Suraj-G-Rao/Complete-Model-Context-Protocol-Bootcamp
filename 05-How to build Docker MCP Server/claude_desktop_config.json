@@ -1,0 +1,20 @@
+{
+    "mcpServers": {
+      "terminal_server": {
+        "command": "docker",
+        "args": [
+          "run",
+          "-i",
+          "--rm",
+          "--init",
+          "-e", "DOCKER_CONTAINER=true",
+          "-v", "C:/Users/AC/mcp/workspace:/root/mcp/workspace",
+          "terminal_server_docker"
+        ]
+      }
+    }
+}
+
+
+
+
