@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "terminal": {
+      "command": "C:\\Users\\AC\\.local\\bin\\uv.exe",
+      "args": [
+        "run",
+        "--with",
+        "mcp[cli]",
+        "mcp",
+        "run",
+        "C:\\Users\\AC\\mcp\\servers\\terminal_server\\main.py"
+      ]
+    }
+  }
+}

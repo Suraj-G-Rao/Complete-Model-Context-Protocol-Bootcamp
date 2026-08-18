@@ -1,0 +1,28 @@
+mkdir -p ~/mcp/servers/terminal_server
+
+mkdir -p ~/mcp/workspace
+
+cd ~/mcp/servers/terminal_server
+
+uv run mcp install termnial_server.py
+
+
+docker build -t terminal_server_docker .
+
+
+
+can you create a directory called claude_output. Make a file inside it called terminal_server_test.txt
+
+
+Can you add the text "I successfully made my first MCP Client and connected with my mcp server :)" to this file and then can you open this using code, the terminal_server_test.txt file.
+
+Can you create a file mcp_client.txt and add the text "I successfully made my first MCP Client and connected with my mcp server :)" to this file.
+
+Can you create a file docker_mcp.txt and add the text "I successfully made docker mcp server and connected with my mcp server :)" to this file.
+
+Can you create a file airplanes.txt and add the text "I successfully made langchain mcp server and connected with my mcp server :)" to this file.
+
+Can you fetch content from the wiki page for airplanes (first few lines) and write a summary of the content to a file called airplanes.txt using run command tool
+
+
+add two numbers 2 and 5 using the tools 
